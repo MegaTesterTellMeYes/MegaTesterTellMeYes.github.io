@@ -1,0 +1,284 @@
+<html><head><base href="https://animesim.ai">
+<title>AnimeSim: Refined Romantic Anime Scene Generator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+  body { 
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
+  .scene {
+    width: 800px;
+    height: 400px;
+    background: linear-gradient(180deg, #87CEEB, #E0F6FF);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    transition: background 5s ease-in-out;
+  }
+  .sun {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: #FFD700;
+    border-radius: 50%;
+    top: 40px;
+    left: 40px;
+    box-shadow: 0 0 20px #FFD700;
+    animation: sun-move 20s infinite linear;
+  }
+  @keyframes sun-move {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
+  }
+  .cloud {
+    position: absolute;
+    background: #fff;
+    border-radius: 50px;
+    animation: cloud-move 30s infinite linear;
+  }
+  .cloud:before, .cloud:after {
+    content: '';
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .cloud1 {
+    width: 100px;
+    height: 30px;
+    top: 50px;
+    left: -100px;
+  }
+  .cloud1:before {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    left: 10px;
+  }
+  .cloud1:after {
+    width: 70px;
+    height: 70px;
+    top: -35px;
+    right: 10px;
+  }
+  .cloud2 {
+    width: 80px;
+    height: 20px;
+    top: 90px;
+    left: -80px;
+    animation-delay: -15s;
+  }
+  .cloud2:before {
+    width: 40px;
+    height: 40px;
+    top: -20px;
+    left: 5px;
+  }
+  .cloud2:after {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    right: 5px;
+  }
+  @keyframes cloud-move {
+    0% { left: -100px; }
+    100% { left: 900px; }
+  }
+  .character {
+    width: 100px;
+    height: 200px;
+    position: absolute;
+    bottom: 0;
+    transition: all 2s ease-in-out;
+  }
+  #char1 {
+    left: 100px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="200" viewBox="0 0 100 200"><circle cx="50" cy="50" r="40" fill="%23ffcccc"/><rect x="30" y="90" width="40" height="110" fill="%23ff9999"/></svg>') no-repeat;
+  }
+  #char2 {
+    right: 100px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="200" viewBox="0 0 100 200"><circle cx="50" cy="50" r="40" fill="%23ccccff"/><rect x="30" y="90" width="40" height="110" fill="%239999ff"/></svg>') no-repeat;
+  }
+  .arm {
+    width: 50px;
+    height: 10px;
+    background-color: #ffcccc;
+    position: absolute;
+    top: 100px;
+    left: 80px;
+    transform-origin: left center;
+    transition: all 0.5s ease-in-out;
+  }
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    transform: rotate(45deg);
+    opacity: 0;
+    animation: float 2s infinite;
+  }
+  .heart::before,
+  .heart::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+  }
+  .heart::before {
+    left: -10px;
+  }
+  .heart::after {
+    top: -10px;
+  }
+  @keyframes float {
+    0% { transform: translate(0, 0) rotate(45deg); opacity: 0; }
+    25% { opacity: 1; }
+    75% { opacity: 1; }
+    100% { transform: translate(0, -100px) rotate(45deg); opacity: 0; }
+  }
+  .message {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: 'Dancing Script', cursive;
+    font-size: 48px;
+    color: #ff6b6b;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+</style>
+</head>
+<body>
+  <div class="scene">
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div id="char1" class="character">
+      <div class="arm"></div>
+    </div>
+    <div id="char2" class="character"></div>
+    <div class="message">Я люблю тебя ❤️</div>
+  </div>
+
+  <script>
+    const char1 = document.getElementById('char1');
+    const char2 = document.getElementById('char2');
+    const arm = document.querySelector('.arm');
+    const message = document.querySelector('.message');
+    const scene = document.querySelector('.scene');
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 200 + 300 + 'px';
+      heart.style.bottom = '200px';
+      scene.appendChild(heart);
+      
+      setTimeout(() => {
+        heart.remove();
+      }, 2000);
+    }
+
+    function updateBackground(progress) {
+      const startColor1 = [135, 206, 235]; // #87CEEB
+      const startColor2 = [224, 246, 255]; // #E0F6FF
+      const endColor1 = [255, 105, 180]; // #FF69B4
+      const endColor2 = [255, 182, 193]; // #FFB6C1
+
+      const currentColor1 = startColor1.map((start, i) => 
+        Math.round(start + (endColor1[i] - start) * progress)
+      );
+      const currentColor2 = startColor2.map((start, i) => 
+        Math.round(start + (endColor2[i] - start) * progress)
+      );
+
+      scene.style.background = `linear-gradient(180deg, 
+        rgb(${currentColor1.join(',')}), 
+        rgb(${currentColor2.join(',')})
+      )`;
+    }
+
+    function interact() {
+      let progress = 0;
+      const duration = 2000; // 2 seconds
+      const startTime = Date.now();
+
+      function step() {
+        progress = Math.min((Date.now() - startTime) / duration, 1);
+        updateBackground(progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        }
+      }
+
+      // Start the animation
+      requestAnimationFrame(step);
+
+      // Char1 moves towards the center
+      char1.style.transform = 'translateX(250px)';
+      
+      // Arm raises and then disappears
+      arm.style.transform = 'rotate(-45deg)';
+      
+      setTimeout(() => {
+        arm.style.opacity = '0';
+        
+        // Char2 reacts and moves towards the center
+        char2.style.transform = 'translateX(-240px)';
+        
+        setTimeout(() => {
+          // Show message
+          message.style.opacity = '1';
+
+          // Create hearts
+          for (let i = 0; i < 5; i++) {
+            setTimeout(createHeart, i * 400);
+          }
+          
+          setTimeout(() => {
+            // Hide message
+            message.style.opacity = '0';
+
+            // Characters return to original positions
+            char1.style.transform = 'translateX(0)';
+            char2.style.transform = 'translateX(0)';
+            
+            // Arm reappears
+            setTimeout(() => {
+              arm.style.transform = 'rotate(0deg)';
+              arm.style.opacity = '1';
+            }, 1000);
+
+            // Restore background color smoothly
+            const restoreStartTime = Date.now();
+            function restoreStep() {
+              const restoreProgress = Math.min((Date.now() - restoreStartTime) / duration, 1);
+              updateBackground(1 - restoreProgress);
+
+              if (restoreProgress < 1) {
+                requestAnimationFrame(restoreStep);
+              }
+            }
+            requestAnimationFrame(restoreStep);
+          }, 3000);
+        }, 1000);
+      }, 1000);
+    }
+
+    setInterval(interact, 10000);
+  </script>
+</body></html>
